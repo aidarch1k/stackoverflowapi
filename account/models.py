@@ -9,7 +9,8 @@ from phonenumber_field.modelfields import PhoneNumberField
 
 class CustomUserManager(BaseUserManager):
     use_in_migrations=True
-    def create(self, phone_number, password, **extra_fields):
+
+    def create_user(self, phone_number, password, **extra_fields):
         if not phone_number:
             raise ValueError('Phone number must be provided')
         user = self.model(phone_number=phone_number, **extra_fields)
@@ -31,7 +32,7 @@ class CustomUserManager(BaseUserManager):
 
 class CustomUser(AbstractUser):
     phone_number = PhoneNumberField(unique=True)
-    usernmane= models.CharField(max_length=155, unique=True)
+    username= models.CharField(max_length=155, unique=True)
     is_active = models.BooleanField(default=False)
     activation_code = models.CharField(max_length=6, blank=True)
 
@@ -44,4 +45,4 @@ class CustomUser(AbstractUser):
         code = get_random_string(length=6, allowed_chars='0123456789')
         self.activation_code = code
     def __str__(self):
-        return f'{self.usernmane} {self.phone_number}'
+        return f'{self.username} {self.phone_number}'
